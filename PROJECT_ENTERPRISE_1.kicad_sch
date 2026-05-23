@@ -4638,6 +4638,12 @@
 		(uuid "9b792f70-6bd1-4115-b8c5-0c9c96cfd3ae")
 	)
 	(junction
+		(at 72.39 134.62)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "9b8403e4-a00a-4a8e-9406-277406e71e09")
+	)
+	(junction
 		(at 48.26 69.85)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -4690,6 +4696,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "b9ec4010-9835-4f92-a232-e09dafed86b9")
+	)
+	(junction
+		(at 72.39 142.24)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "d53a2b56-d9d7-4ab5-9336-95023886957c")
 	)
 	(junction
 		(at 29.21 123.19)
@@ -4857,7 +4869,7 @@
 	)
 	(wire
 		(pts
-			(xy 72.39 138.43) (xy 72.39 147.32)
+			(xy 72.39 138.43) (xy 72.39 142.24)
 		)
 		(stroke
 			(width 0)
@@ -5144,6 +5156,16 @@
 			(type default)
 		)
 		(uuid "2cc1d2d3-cf69-41e8-ae6e-c884cd078872")
+	)
+	(wire
+		(pts
+			(xy 66.04 134.62) (xy 72.39 134.62)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2cea1dd8-2fe5-46fa-b71d-389e204fb1b9")
 	)
 	(wire
 		(pts
@@ -5927,6 +5949,16 @@
 	)
 	(wire
 		(pts
+			(xy 72.39 142.24) (xy 72.39 147.32)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a9a04583-9d6e-475d-b71f-486781210dcb")
+	)
+	(wire
+		(pts
 			(xy 72.39 85.09) (xy 72.39 111.76)
 		)
 		(stroke
@@ -5977,6 +6009,16 @@
 	)
 	(wire
 		(pts
+			(xy 72.39 134.62) (xy 72.39 135.89)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b0ca55e7-7959-4550-8cc1-2fdebca1e599")
+	)
+	(wire
+		(pts
 			(xy 16.51 68.58) (xy 20.32 68.58)
 		)
 		(stroke
@@ -5994,6 +6036,16 @@
 			(type default)
 		)
 		(uuid "b67d9308-1c46-4f62-9e25-29863441219c")
+	)
+	(wire
+		(pts
+			(xy 66.04 142.24) (xy 72.39 142.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b89a714d-a565-4b59-b938-7e0c28100e92")
 	)
 	(wire
 		(pts
@@ -6407,7 +6459,7 @@
 	)
 	(wire
 		(pts
-			(xy 72.39 125.73) (xy 72.39 135.89)
+			(xy 72.39 125.73) (xy 72.39 134.62)
 		)
 		(stroke
 			(width 0)
@@ -14007,6 +14059,85 @@
 			(project "PROJECT_ENTERPRISE_1"
 				(path "/8e52210a-ef94-47f7-a0af-9c2bdf0282f0"
 					(reference "R21")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 66.04 138.43 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "e37d44b8-b019-4a0b-a7bf-e15375aec2a0")
+		(property "Reference" "R34"
+			(at 66.04 138.43 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "220 2Watt"
+			(at 59.436 138.43 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder"
+			(at 64.262 138.43 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 66.04 138.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 66.04 138.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "ec507075-9dd2-4261-a32c-05933e4bbe7e")
+		)
+		(pin "2"
+			(uuid "b5d8ab46-a7e5-454b-b8e5-d5dc82995531")
+		)
+		(instances
+			(project "PROJECT_ENTERPRISE_1"
+				(path "/8e52210a-ef94-47f7-a0af-9c2bdf0282f0"
+					(reference "R34")
 					(unit 1)
 				)
 			)
