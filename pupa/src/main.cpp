@@ -113,7 +113,7 @@ float readAveragedVoltage(int pin, int samples)
 
 void calibrateCurrentOffsets(void)
 { // this is done to mitigate the noise that appeared on my system and the leakage current of the MOSFET
-  offsetI1 = readAveragedVoltage(PIN_I1, 200);
+  offsetI1 = readAveragedVoltage(PIN_I1, 200); // the ADC takes 200 samples at the startup
   offsetI2 = readAveragedVoltage(PIN_I2, 200);
   offsetI3 = readAveragedVoltage(PIN_I3, 200);
   offsetI4 = readAveragedVoltage(PIN_I4, 200);
@@ -130,7 +130,7 @@ float readSenseVoltageWithOffset(int pin, float offset) //Reads the corrected vo
   return corrected;
 }
 
-float VoltageToCurrent(float v_sense)
+float VoltageToCurrent(float v_sense) // converts the voltage on the I-sense pin to currents I = V / R
 {
   const float margin = 0.12f; // ads a margin of error to the ADC 
   if (v_sense < margin)
