@@ -7,6 +7,9 @@ extern const int PIN_LCD_DC;
 extern const int PIN_LCD_CS;
 extern const int PIN_LCD_RST;
 
+//small pixel font bitmap, each character is 5x8 pixels
+//each charcater is 5 bytes wide and 8 pixels high
+//each character uses 6 columns = 5 bytes wide + 1 for spacing
 static const uint8_t FONT_SPACE[5] = {0x00,0x00,0x00,0x00,0x00};
 static const uint8_t FONT_DOT[5]   = {0x00,0x00,0x60,0x60,0x00};
 static const uint8_t FONT_COLON[5] = {0x00,0x36,0x36,0x00,0x00};
@@ -28,30 +31,30 @@ static const uint8_t FONT_V[5] = {0x1F,0x20,0x40,0x20,0x1F};
 
 static inline void lcdWrite(bool isData, uint8_t value)
 {
-  digitalWrite(PIN_LCD_DC, isData ? HIGH : LOW);
-  digitalWrite(PIN_LCD_CS, LOW);
+  digitalWrite(PIN_LCD_DC, isData ? HIGH : LOW); // we select if we want a command or data to the display
+  digitalWrite(PIN_LCD_CS, LOW); // Enabling LCD by pulling CS low
 
-  for (int i = 0; i < 8; i++)
+  for (int i = 0; i < 8; i++) //sending 8 bits, startingfrom the most significatnt bit
   {
-    digitalWrite(PIN_LCD_DIN, (value & 0x80) ? HIGH : LOW);
-    digitalWrite(PIN_LCD_CLK, HIGH);
-    value <<= 1;
-    digitalWrite(PIN_LCD_CLK, LOW);
+    digitalWrite(PIN_LCD_DIN, (value & 0x80) ? HIGH : LOW); // anding so that the we put the CURRENT MSB on the data line
+    digitalWrite(PIN_LCD_CLK, HIGH);// sending data on the rising edge of the clock, LCD samples
+    value <<= 1; // shifting left so that we put the next bit as the MSB
+    digitalWrite(PIN_LCD_CLK, LOW); // falling CLK edge, preparing for sending again
   }
 
-  digitalWrite(PIN_LCD_CS, HIGH);
+  digitalWrite(PIN_LCD_CS, HIGH);// finished sending the byte, deselect LCD
 }
 
-static inline void lcdCommand(uint8_t cmd)
+static inline void lcdCommand(uint8_t cmd) //additional functions for lcdWrite, lcdcommand sends commands
 {
   lcdWrite(false, cmd);
 }
 
-static inline void lcdData(uint8_t data)
+static inline void lcdData(uint8_t data)//lcddData sends data, mentioning that it is indeed data to the macro isData?
 {
   lcdWrite(true, data);
 }
-
+// look up table referencing the bitmap, returns space if nothing from the font is selected
 static inline const uint8_t* getCharBitmap(char c)
 {
   switch (c)
@@ -76,83 +79,82 @@ static inline const uint8_t* getCharBitmap(char c)
   }
 }
 
-static inline void lcdInit(void)
-{
+static inline void lcdInit(void) // initalization of the LCD
+{ //initializing all of the pins connected to it as outputs
   pinMode(PIN_LCD_CLK, OUTPUT);
   pinMode(PIN_LCD_DIN, OUTPUT);
   pinMode(PIN_LCD_DC, OUTPUT);
   pinMode(PIN_LCD_CS, OUTPUT);
   pinMode(PIN_LCD_RST, OUTPUT);
 
-  digitalWrite(PIN_LCD_CS, HIGH);
+  digitalWrite(PIN_LCD_CS, HIGH);  //default idle start of the initialization
   digitalWrite(PIN_LCD_CLK, LOW);
 
-  digitalWrite(PIN_LCD_RST, LOW);
+  digitalWrite(PIN_LCD_RST, LOW); // quick reset pulse, briging the reset low and then high after 10 ms
   delay(10);
   digitalWrite(PIN_LCD_RST, HIGH);
 
-  lcdCommand(0x21);
-  lcdCommand(0xBF);
-  lcdCommand(0x04);
-  lcdCommand(0x14);
-  lcdCommand(0x20);
-  lcdCommand(0x0C);
+  lcdCommand(0x21); //enter extended instruction set
+  lcdCommand(0xBF); // sets contrast
+  lcdCommand(0x04); // sets the temperature coefficient
+  lcdCommand(0x14); // sets LCD bias mode
+  lcdCommand(0x20); // lest the lcd back to the instruction set after all of these
+  lcdCommand(0x0C); // normal display mode (not inverted)
 }
 
-static inline void lcdSetXY(uint8_t x, uint8_t y)
+static inline void lcdSetXY(uint8_t x, uint8_t y) // sets the cursor
 {
-  lcdCommand(0x80 | x);
-  lcdCommand(0x40 | y);
+  lcdCommand(0x80 | x); //sets column
+  lcdCommand(0x40 | y); // sets row  
 }
 
-static inline void lcdClear(void)
+static inline void lcdClear(void) /// clears the entire display
 {
-  lcdSetXY(0, 0);
+  lcdSetXY(0, 0); // sets the cursor at the top left courner
 
-  for (int i = 0; i < 84 * 6; i++)
+  for (int i = 0; i < 84 * 6; i++) // for the entire display ram
   {
-    lcdData(0x00);
+    lcdData(0x00);  // writes 0x00 bytes to clear the entire ram and turn all of the pixels off
   }
 
-  lcdSetXY(0, 0);
+  lcdSetXY(0, 0);// sets cursor back at the top left again
 }
 
-static inline void lcdPrintChar(char c)
+static inline void lcdPrintChar(char c) // prints one character to the screen
 {
-  const uint8_t* bmp = getCharBitmap(c);
+  const uint8_t* bmp = getCharBitmap(c); // pointer to the bitmap
 
-  for (int i = 0; i < 5; i++)
+  for (int i = 0; i < 5; i++) // draw the columns of 5 characters wide
   {
     lcdData(bmp[i]);
   }
-
-  lcdData(0x00);
+  lcdData(0x00); // one column for spacing
 }
 
-static inline void lcdPrint(const char* s)
+static inline void lcdPrint(const char* s) // prints a string to the lcd screen
 {
-  while (*s)
+  while (*s) // as long as the string isn't done (NULL byte)
   {
-    lcdPrintChar(*s++);
+    lcdPrintChar(*s++); // prints one character from the bitmap and caries on the loop
   }
 }
 
-static inline void lcdPrintValue(uint8_t row, const char* label, float value)
+static inline void lcdPrintValue(uint8_t row, const char* label, float value) // allows us to print strings
 {
-  char buf[12];
-  dtostrf(value, 0, 2, buf);
+  char buf[12]; // temporary variable 
+  dtostrf(value, 0, 2, buf); // converts floats to strings, 0 no minimum width, 2 -> two points after decimal, stores them into the buf
 
-  lcdSetXY(0, row);
-  lcdPrint(label);
-  lcdPrint(buf);
+  lcdSetXY(0, row); // sets the cursor back to the beginning of the row
+  lcdPrint(label); // prints the label
+  lcdPrint(buf); // prints the value
 }
 
-static inline void showValues(float vbat, float i1, float i2, float i3, float i4)
+static inline void showValues(float volt, float i1, float i2, float i3, float i4) // uses the earlier functions to print the values we want
 {
-  lcdClear();
-  lcdPrintValue(0, "V:",  vbat);
-  lcdPrintValue(1, "I1:", i1);
-  lcdPrintValue(2, "I2:", i2);
-  lcdPrintValue(3, "I3:", i3);
-  lcdPrintValue(4, "I4:", i4);
+  lcdClear(); // clears the LCD
+  lcdPrintValue(0, "V:",  volt); // prints voltage
+  lcdPrintValue(1, "I1:", i1); // prints current1
+  lcdPrintValue(2, "I2:", i2); // prints current2
+  lcdPrintValue(3, "I3:", i3); // prints current3
+  lcdPrintValue(4, "I4:", i4); //prints current4
 }

@@ -90,9 +90,10 @@ float adcToVoltage(int raw) // makes sure the ADC works properly
 
 float readVoltage(void) // reads the voltage of PIN_V then converts it the ADC value to an actual Voltage number 
 {
-  int raw = analogRead(PIN_V);
-  float vSense = adcToVoltage(raw);
-  return vSense * DIVIDER;
+  int raw = analogRead(PIN_V); // reads PIN_V and stores it in raw
+  float vSense = adcToVoltage(raw); // converts the ADC value into a real value
+  return vSense * DIVIDER * 1.68;  // vSense * Divider only gives us around 2.9 volts the true volatge measurement from the divider
+  // but multiplying it by 1.69 gives us the actual power trace's voltage we are measuring, which is 5V
 }
 
 // Current sense
